@@ -1,7 +1,7 @@
 import sys
 import pandas as pd
 from PyQt5.QtWidgets import (
-    QWidget, QPushButton, QComboBox, QLabel, QFileDialog,
+   QApplication, QWidget, QPushButton, QComboBox, QLabel, QFileDialog,
     QMessageBox, QVBoxLayout, QHBoxLayout, QSizePolicy
 )
 
@@ -64,4 +64,38 @@ class SolverGUI(QWidget):
 
             # Display a success message
             QMessageBox.information(self, 'Success!', f'File {file_path} imported successfully!')
+
+    def process_file(self, file_path):
+        # Read Excel file using pandas
+        data = pd.read_excel(file_path)
+        # Add code to process the file as required
+        return data
+
+    def solve_problem(self):
+        # Get selected algorithm from dropdown list
+        algorithm = self.cb_algorithm.currentText()
+
+        # Check if a file has been imported before solving the problem
+        if not hasattr(self, 'data'):
+            QMessageBox.warning(self, 'No File Found', 'Please import an Excel file before attempting to solve the problem.')
+            return
+
+        # Add code to solve the problem using selected algorithm
+        # Create Excel file with results
+        result_file_path = 'results.xlsx'
+        results = pd.DataFrame({'Algorithm': [algorithm], 'Result': ['TODO']})
+        results.to_excel(result_file_path, index=False)
+        print(f'Results saved to {result_file_path}')
+
+        # Display a success message
+        QMessageBox.information(self, 'Success!', f'Results saved to {result_file_path}!')
+
+
+if __name__ == '__main__':
+    # Create application and window
+    app = QApplication(sys.argv)
+    solver_gui = SolverGUI()
+    solver_gui.show()
+    # Run application event
+    app.exec_()
 
