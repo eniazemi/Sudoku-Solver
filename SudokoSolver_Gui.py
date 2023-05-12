@@ -1,9 +1,10 @@
 import sys
-import pandas as pd
 from PyQt5.QtWidgets import (
-   QApplication, QWidget, QPushButton, QComboBox, QLabel, QFileDialog,
+    QApplication, QWidget, QPushButton, QComboBox, QLabel, QFileDialog,
     QMessageBox, QVBoxLayout, QHBoxLayout, QSizePolicy
 )
+from functions import *
+
 
 class SolverGUI(QWidget):
     def __init__(self):
@@ -61,13 +62,17 @@ class SolverGUI(QWidget):
         if file_path:
             # Call function to process the file
             self.data = self.process_file(file_path)
-
-            # Display a success message
-            QMessageBox.information(self, 'Success!', f'File {file_path} imported successfully!')
+            try:
+                if self.data['error_code']:
+                    QMessageBox.information(self, 'ERROR!',
+                                            f'File {file_path} was not imported successfully!\nError Code : {self.data["error_code"]}')
+            except:
+                QMessageBox.information(self, 'SUCCESS!', f'File {file_path} was imported successfully!')
+                print(self.data)  # contains matrix with numbers
 
     def process_file(self, file_path):
         # Read Excel file using pandas
-        data = pd.read_excel(file_path)
+        data = read_table(file_path)
         # Add code to process the file as required
         return data
 
@@ -77,7 +82,8 @@ class SolverGUI(QWidget):
 
         # Check if a file has been imported before solving the problem
         if not hasattr(self, 'data'):
-            QMessageBox.warning(self, 'No File Found', 'Please import an Excel file before attempting to solve the problem.')
+            QMessageBox.warning(self, 'No File Found',
+                                'Please import an Excel file before attempting to solve the problem.')
             return
 
         # Add code to solve the problem using selected algorithm
@@ -98,4 +104,3 @@ if __name__ == '__main__':
     solver_gui.show()
     # Run application event
     app.exec_()
-

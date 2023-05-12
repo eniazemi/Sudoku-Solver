@@ -37,7 +37,7 @@ def is_9x9(df):
 def read_table(path):
     path_valid = check_if_path_valid(path)
     if not path_valid:
-        return "BAD PATH"
+        return {"error_code": "BAD PATH"}
 
     df = pd.read_excel(path)
     df_temp = df.fillna(0)
@@ -45,18 +45,13 @@ def read_table(path):
     all_chars_numeric = check_if_all_chars_are_numbers(df_temp)
 
     if not all_chars_numeric:
-        return "ALL THE DATA IN EXCEL SHOULD BE NUMBER"
+        return {"error_code": "ALL THE DATA IN EXCEL SHOULD BE NUMBER"}
 
     if not is_9x9(df):
-        return "TABLE SHOULD BE IN 9x9 FORMAT"
+        return {"error_code": "TABLE SHOULD BE IN 9x9 FORMAT"}
 
     get_total_number_given_from_df(df)
     df = df.fillna(0)
     matrix = df.to_numpy().astype(int)
+    # print(matrix)
     return matrix
-
-
-x = read_table(r"C:\Users\User\Desktop\Sudoku-Solver/Excel.xlsx")
-print(total_number_given)
-print(x)
-
