@@ -55,3 +55,15 @@ def read_table(path):
     matrix = df.to_numpy().astype(int)
     # print(matrix)
     return matrix
+
+
+def time_f():
+    start_time = time.time()
+    
+    time.sleep(3) #the code edit here  
+
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Execution time: {execution_time} seconds")
+    
+    
