@@ -58,7 +58,7 @@ def read_table(path):
     # print(matrix)
     return matrix
 
-
+# check if sudoku puzzle is valid
 def is_valid(board, row, col, num):
     # Check if 'num' is already present in the current row
     for i in range(9):
@@ -66,8 +66,8 @@ def is_valid(board, row, col, num):
             return False
 
     # Check if 'num' is already present in the current column
-    for i in range(9):
-        if board[i][col] == num:
+    for j in range(9):
+        if board[j][col] == num:
             return False
 
     # Check if 'num' is already present in the current 3x3 grid
@@ -80,26 +80,26 @@ def is_valid(board, row, col, num):
 
     return True
 
-
+# iteration depth first search algorithm implementation
 def solve_sudoku_iteration_dfs(board):
     stack = [(0, 0)]  # Initialize the stack with the top-left cell
     while stack:
         row, col = stack.pop()
         if board[row][col] == 0:
-            num = board[row][col] + 1
+            num = 1  # Start with number 1
             while num <= 9:
                 if is_valid(board, row, col, num):
                     board[row][col] = num
                     stack.append((row, col))
-                    if row == 8 and col == 8:
+                    if row == 8 and col == 8:  # Updated condition for last cell
                         return True  # Solution found
                     break
                 num += 1
-            else:
-                board[row][col] = 0  # Reset the cell if no valid number is found
-                if stack:
-                    row, col = stack[-1]
-                    continue
+        else:
+            board[row][col] = 0  # Reset the cell if no valid number is found
+            if stack:
+                row, col = stack[-1]  # Backtrack to the previous cell
+                continue  # Skip the incrementing of row or col
         if col < 8:
             stack.append((row, col + 1))  # Move to the next column
         elif row < 8:
@@ -107,7 +107,8 @@ def solve_sudoku_iteration_dfs(board):
 
     return False
 
-
+# entry function to iteration dfs algorithm
+# returns a matrix of solved sudoku puzzle
 def sudoku_solver_iteration_dfs(board):
     # Create a deep copy of the board to keep the original unchanged
     board_copy = copy.deepcopy(board)
@@ -118,39 +119,40 @@ def sudoku_solver_iteration_dfs(board):
     else:
         return None  # If no solution exists
 
+# code below is used to test the result of algorithms using console
 
-def print_board(board):
-    # Print the Sudoku board
-    for i in range(9):
-        for j in range(9):
-            print(board[i][j], end=" ")
-        print()
-# Sample Sudoku board
-board = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-]
+# def print_board(board):
+#     # Print the Sudoku board
+#     for i in range(9):
+#         for j in range(9):
+#             print(board[i][j], end=" ")
+#         print()
 
-start_time = time.time()  # Start the timer
+# # Sample Sudoku board
+# board =  [
+#     [5, 3, 0, 0, 7, 0, 0, 0, 0],
+#     [6, 0, 0, 1, 9, 5, 0, 0, 0],
+#     [0, 9, 8, 0, 0, 0, 0, 6, 0],
+#     [8, 0, 0, 0, 6, 0, 0, 0, 3],
+#     [4, 0, 0, 8, 0, 3, 0, 0, 1],
+#     [7, 0, 0, 0, 2, 0, 0, 0, 6],
+#     [0, 6, 0, 0, 0, 0, 2, 8, 0],
+#     [0, 0, 0, 4, 1, 9, 0, 0, 5],
+#     [0, 0, 0, 0, 8, 0, 0, 7, 9]
+# ]
 
-# Solve the Sudoku puzzle
-solved_board = sudoku_solver_iteration_dfs(board)
+# start_time = time.time()  # Start the timer
 
-end_time = time.time()  # Stop the timer
-elapsed_time = end_time - start_time  # Calculate the elapsed time in seconds
-elapsed_time_ms = elapsed_time * 1000  # Convert elapsed time to milliseconds
+# # Solve the Sudoku puzzle
+# solved_board = sudoku_solver_iteration_dfs(board)
 
-if solved_board is not None:
-    print("Sudoku solved:")
-    # print_board(solved_board)
-    print("Time taken to solve the Sudoku puzzle: {:.3f} milliseconds".format(elapsed_time_ms))
-else:
-    print("No solution exists for the Sudoku puzzle.")
+# end_time = time.time()  # Stop the timer
+# elapsed_time = end_time - start_time  # Calculate the elapsed time in seconds
+# elapsed_time_ms = elapsed_time * 1000  # Convert elapsed time to milliseconds
 
+# if solved_board is not None:
+#     print("Sudoku solved:")
+#     print_board(solved_board)
+#     print("Time taken to solve the Sudoku puzzle: {:.3f} milliseconds".format(elapsed_time_ms))
+# else:
+#     print("No solution exists for the Sudoku puzzle.")
