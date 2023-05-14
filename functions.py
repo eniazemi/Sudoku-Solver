@@ -55,3 +55,26 @@ def read_table(path):
     matrix = df.to_numpy().astype(int)
     # print(matrix)
     return matrix
+
+
+ # Check if all cells are filled
+def is_solved(puzzle):
+    for row in range(9):
+        for col in range(9):
+            if puzzle[row][col] == 0:
+                return False
+    return True
+
+    # Check if a value is valid for a cell(row,col,square rule)
+def is_valid(puzzle, row, col, val):
+    for i in range(9):
+        if puzzle[row][i] == val or puzzle[i][col] == val:
+            return False
+    box_row = (row // 3) * 3
+    box_col = (col // 3) * 3
+    for i in range(box_row, box_row + 3):
+        for j in range(box_col, box_col + 3):
+            if puzzle[i][j] == val:
+                return False
+    return True
+
