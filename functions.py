@@ -81,50 +81,36 @@ def is_valid(board, row, col, num):
     return True
 
 
-def find_unassigned_location(board):
-    # Find an unassigned location on the board
-    for row in range(9):
-        for col in range(9):
-            if board[row][col] == 0:
-                return row, col
-    return -1, -1  # If no unassigned location is found
-
-
 def solve_sudoku_iteration_dfs(board):
-    stack = [(board, 0, 0)]  # Initialize the stack with the initial state
+    stack = [(0, 0)]  # Initialize the stack with the top-left cell
     while stack:
-        curr_board, row, col = stack.pop()
-        if row == 9:  # If all rows are filled, the puzzle is solved
-            return True
-        
-        if curr_board[row][col] != 0:
-            # Move to the next cell
-            next_row = row + 1 if col == 8 else row
-            next_col = (col + 1) % 9
-            stack.append((curr_board, next_row, next_col))
-            continue
-
-        for num in range(1, 10):
-            if is_valid(curr_board, row, col, num):
-                curr_board[row][col] = num
-                # Create a new copy of the board and push it to the stack
-                new_board = [row[:] for row in curr_board]
-                stack.append((new_board, row, col))
-                next_row = row + 1 if col == 8 else row
-                next_col = (col + 1) % 9
-                stack.append((curr_board, next_row, next_col))
-                break
-
-        if not stack:  # If the stack becomes empty, it means there is no solution
-            return False
+        row, col = stack.pop()
+        if board[row][col] == 0:
+            num = board[row][col] + 1
+            while num <= 9:
+                if is_valid(board, row, col, num):
+                    board[row][col] = num
+                    stack.append((row, col))
+                    if row == 8 and col == 8:
+                        return True  # Solution found
+                    break
+                num += 1
+            else:
+                board[row][col] = 0  # Reset the cell if no valid number is found
+                if stack:
+                    row, col = stack[-1]
+                    continue
+        if col < 8:
+            stack.append((row, col + 1))  # Move to the next column
+        elif row < 8:
+            stack.append((row + 1, 0))  # Move to the next row
 
     return False
 
 
-
 def sudoku_solver_iteration_dfs(board):
     # Create a deep copy of the board to keep the original unchanged
-    board_copy = [row[:] for row in board]
+    board_copy = copy.deepcopy(board)
 
     # Solve the Sudoku puzzle
     if solve_sudoku_iteration_dfs(board_copy):
@@ -133,16 +119,13 @@ def sudoku_solver_iteration_dfs(board):
         return None  # If no solution exists
 
 
-# Sample sudoku to evaluate the solution and time taken for each algorithm
-
 def print_board(board):
     # Print the Sudoku board
     for i in range(9):
         for j in range(9):
             print(board[i][j], end=" ")
         print()
-
-# Sample Sudoku board (0 represents empty cells)
+# Sample Sudoku board
 board = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -166,7 +149,8 @@ elapsed_time_ms = elapsed_time * 1000  # Convert elapsed time to milliseconds
 
 if solved_board is not None:
     print("Sudoku solved:")
-    print_board(solved_board)
+    # print_board(solved_board)
     print("Time taken to solve the Sudoku puzzle: {:.3f} milliseconds".format(elapsed_time_ms))
 else:
     print("No solution exists for the Sudoku puzzle.")
+
