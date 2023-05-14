@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import numpy as np
+import copy
+import time
 
 total_number_given = 0
 
@@ -55,3 +57,38 @@ def read_table(path):
     matrix = df.to_numpy().astype(int)
     # print(matrix)
     return matrix
+
+
+
+def solve_sudoku(board):
+    stack = [(board, 0, 0)]
+    while stack:
+        curr_board, row, col = stack.pop()
+        if row == 9:
+            return curr_board
+        if curr_board[row][col] != 0:
+            if col == 8:
+                stack.append((curr_board, row+1, 0))
+            else:
+                stack.append((curr_board, row, col+1))
+            continue
+        for num in range(1, 10):
+            if is_valid(curr_board, row, col, num):
+                curr_board[row][col] = num
+                if col == 8:
+                    stack.append((curr_board, row+1, 0))
+                else:
+                    stack.append((curr_board, row, col+1))
+        curr_board[row][col] = 0
+    return None
+
+
+def is_valid(board, row, col, num):
+    for i in range(9):
+        if board[row][i] == num:
+            return False
+        if board[i][col] == num:
+            return False
+        if board[3*(row//3) + i//3][3*(col//3) + i%3] == num:
+            return False
+    return True
