@@ -6,7 +6,7 @@ import time
 from collections import deque
 
 total_number_given = 0
-
+ 
 
 def get_total_number_given_from_df(df):
     numeric_cols = df.select_dtypes(include=np.number).columns
