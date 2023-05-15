@@ -58,6 +58,88 @@ def read_table(path):
     # print(matrix)
     return matrix
 
+
+def solve_sudoku_dls(puzzle, depth_limit):
+    # Create a copy of the puzzle to avoid modifying the original
+    puzzle_copy = [row[:] for row in puzzle]
+    
+    return s_helper_dls(puzzle_copy, depth_limit)
+    
+
+def s_helper_dls(puzzle, depth_limit):
+    # If the puzzle is solved, return it
+    if is_solved(puzzle):
+        return puzzle, depth_limit
+
+    # If the depth limit has been reached, return None
+    if depth_limit == 0:
+        return None
+
+    # Choose the next empty cell to fill
+    row, col = choose_next_cell(puzzle)
+
+    # Try each valid value for the cell recursively
+    for val in range(1, 10):
+        if is_valid(puzzle, row, col, val):
+            puzzle[row][col] = val
+            result = s_helper_dls(puzzle, depth_limit - 1)
+            if result is not None:
+                # A solution was found
+                return result
+            puzzle[row][col] = 0
+
+    # No solution found within the depth limit
+    return None
+
+ # Check if all cells are filled
+def is_solved(puzzle):
+    for row in range(9):
+        for col in range(9):
+            if puzzle[row][col] == 0:
+                return False
+    return True
+
+ # Choose the next empty cell with the fewest possible values
+def choose_next_cell(puzzle):
+    min_count = 10
+    next_cell = None
+    for row in range(9):
+        for col in range(9):
+            if puzzle[row][col] == 0:
+                count = count_possible_values(puzzle, row, col)
+                if count < min_count:
+                    min_count = count
+                    next_cell = (row, col)
+    return next_cell
+
+ # Count the number of possible values for a cell
+def count_possible_values(puzzle, row, col):
+   
+    values = set(range(1, 10))
+    for i in range(9):
+        values.discard(puzzle[row][i])
+        values.discard(puzzle[i][col])
+    box_row = (row // 3) * 3
+    box_col = (col // 3) * 3
+    for i in range(box_row, box_row + 3):
+        for j in range(box_col, box_col + 3):
+            values.discard(puzzle[i][j])
+    return len(values)
+
+# Check if a value is valid for a cell
+def is_valid(puzzle, row, col, val):
+    
+    for i in range(9):
+        if puzzle[row][i] == val or puzzle[i][col] == val:
+            return False
+    box_row = (row // 3) * 3
+    box_col = (col // 3) * 3
+    for i in range(box_row, box_row + 3):
+        for j in range(box_col, box_col + 3):
+            if puzzle[i][j] == val:
+                return False
+    return True
+
 # check if sudoku puzzle is valid
 def is_valid(board, row, col, num):
     # Check if 'num' is already present in the current row
@@ -175,3 +257,5 @@ def sudoku_solver_iteration_dfs(board):
 #     print("Time taken to solve the Sudoku puzzle: {:.3f} milliseconds".format(elapsed_time_ms))
 # else:
 #     print("No solution exists for the Sudoku puzzle.")
+
+ 
