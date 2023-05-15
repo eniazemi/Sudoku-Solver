@@ -61,13 +61,12 @@ def read_table(path):
 # check if sudoku puzzle is valid
 def is_valid(board, row, col, num):
     # Check if 'num' is already present in the current row
-    for i in range(9):
-        if board[row][i] == num:
-            return False
+    if num in board[row] and num != 0:
+        return False
 
     # Check if 'num' is already present in the current column
-    for j in range(9):
-        if board[j][col] == num:
+    for i in range(9):
+        if board[i][col] == num and num != 0:
             return False
 
     # Check if 'num' is already present in the current 3x3 grid
@@ -75,37 +74,43 @@ def is_valid(board, row, col, num):
     start_col = 3 * (col // 3)
     for i in range(3):
         for j in range(3):
-            if board[start_row + i][start_col + j] == num:
+            if board[start_row + i][start_col + j] == num and num != 0:
                 return False
 
     return True
 
-# iteration depth first search algorithm implementation
+# iterative dfs algorithm implementation
 def solve_sudoku_iteration_dfs(board):
-    stack = [(0, 0)]  # Initialize the stack with the top-left cell
-    while stack:
-        row, col = stack.pop()
-        if board[row][col] == 0:
-            num = 1  # Start with number 1
-            while num <= 9:
-                if is_valid(board, row, col, num):
-                    board[row][col] = num
-                    stack.append((row, col))
-                    if row == 8 and col == 8:  # Updated condition for last cell
-                        return True  # Solution found
-                    break
-                num += 1
-        else:
-            board[row][col] = 0  # Reset the cell if no valid number is found
-            if stack:
-                row, col = stack[-1]  # Backtrack to the previous cell
-                continue  # Skip the incrementing of row or col
-        if col < 8:
-            stack.append((row, col + 1))  # Move to the next column
-        elif row < 8:
-            stack.append((row + 1, 0))  # Move to the next row
+    stack = []  # Initialize the stack
+    for row in range(9):
+        for col in range(9):
+            if board[row][col] == 0:
+                stack.append((row, col))
 
-    return False
+    index = 0  # Index to track the current position in the stack
+
+    while index < len(stack):
+        row, col = stack[index]
+        found_number = False
+
+        for num in range(board[row][col] + 1, 10):
+            if is_valid(board, row, col, num):
+                board[row][col] = num
+                found_number = True
+                index += 1
+                break
+
+        if not found_number:
+            board[row][col] = 0
+            index -= 1
+
+            if index < 0:
+                return False
+
+    return board
+
+
+
 
 # entry function to iteration dfs algorithm
 # returns a matrix of solved sudoku puzzle
@@ -119,6 +124,7 @@ def sudoku_solver_iteration_dfs(board):
     else:
         return None  # If no solution exists
 
+
 # code below is used to test the result of algorithms using console
 
 # def print_board(board):
@@ -129,7 +135,7 @@ def sudoku_solver_iteration_dfs(board):
 #         print()
 
 # # Sample Sudoku board
-# board =  [
+# board = [
 #     [5, 3, 0, 0, 7, 0, 0, 0, 0],
 #     [6, 0, 0, 1, 9, 5, 0, 0, 0],
 #     [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -139,6 +145,19 @@ def sudoku_solver_iteration_dfs(board):
 #     [0, 6, 0, 0, 0, 0, 2, 8, 0],
 #     [0, 0, 0, 4, 1, 9, 0, 0, 5],
 #     [0, 0, 0, 0, 8, 0, 0, 7, 9]
+# ]
+
+# # sample of an invalid sudoku
+# unsolvable_sudoku = [
+#     [5, 3, 0, 0, 7, 0, 0, 0, 0],
+#     [6, 0, 0, 1, 9, 5, 0, 0, 0],
+#     [0, 9, 8, 0, 0, 0, 0, 6, 0],
+#     [8, 0, 0, 0, 6, 0, 0, 0, 3],
+#     [4, 0, 0, 8, 0, 3, 0, 0, 1],
+#     [7, 0, 0, 0, 2, 0, 0, 0, 6],
+#     [0, 6, 0, 0, 0, 0, 2, 8, 0],
+#     [0, 0, 0, 4, 1, 9, 0, 0, 5],
+#     [0, 0, 0, 0, 8, 0, 0, 7, 7]  # Note the duplicate '7' in the last row
 # ]
 
 # start_time = time.time()  # Start the timer
