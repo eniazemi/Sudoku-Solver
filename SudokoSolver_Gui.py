@@ -24,7 +24,7 @@ class SolverGUI(QWidget):
         # Create dropdown list and label to select algorithm
         self.lbl_algorithm = QLabel('Select Algorithm:', self)
         self.cb_algorithm = QComboBox(self)
-        self.cb_algorithm.addItems(['Backtracking', 'Depth Limited Search', 'Breadth First Search'])
+        self.cb_algorithm.addItems(['Backtracking', 'Depth Limited Search', 'Breadth First Search', 'iteration dfs'])
 
         # Create button to solve problem
         self.btn_solve = QPushButton('Solve', self)
