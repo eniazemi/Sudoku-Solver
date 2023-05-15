@@ -213,6 +213,7 @@ def sudoku_solver_iteration_dfs(board):
 def solve_sudoku_bfs(puzzle):
     queue = deque()  # Initialize the queue
     queue.append(puzzle)
+    visited = set()  # Track visited states
 
     while queue:
         current = queue.popleft()
@@ -226,7 +227,12 @@ def solve_sudoku_bfs(puzzle):
             if is_valid(current, row, col, num):
                 new_puzzle = copy.deepcopy(current)
                 new_puzzle[row][col] = num
-                queue.append(new_puzzle)
+
+                # Check if the new state has been visited before
+                state = tuple(map(tuple, new_puzzle))
+                if state not in visited:
+                    visited.add(state)
+                    queue.append(new_puzzle)
 
     return None
 
@@ -268,14 +274,14 @@ def solve_sudoku_bfs(puzzle):
 # ]
 
 # start_time = time.time()  # Start the timer
-
+#
 # # Solve the Sudoku puzzle
 # solved_board = solve_sudoku_bfs(board)
-
+#
 # end_time = time.time()  # Stop the timer
 # elapsed_time = end_time - start_time  # Calculate the elapsed time in seconds
 # elapsed_time_ms = elapsed_time * 1000  # Convert elapsed time to milliseconds
-
+#
 # if solved_board is not None:
 #     print("Sudoku solved:")
 #     print_board(solved_board)
