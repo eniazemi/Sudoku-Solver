@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import copy
 import time
+from collections import deque
 
 total_number_given = 0
 
@@ -62,9 +63,9 @@ def read_table(path):
 def solve_sudoku_dls(puzzle, depth_limit):
     # Create a copy of the puzzle to avoid modifying the original
     puzzle_copy = [row[:] for row in puzzle]
-    
+
     return s_helper_dls(puzzle_copy, depth_limit)
-    
+
 
 def s_helper_dls(puzzle, depth_limit):
     # If the puzzle is solved, return it
@@ -91,7 +92,8 @@ def s_helper_dls(puzzle, depth_limit):
     # No solution found within the depth limit
     return None
 
- # Check if all cells are filled
+
+# Check if all cells are filled
 def is_solved(puzzle):
     for row in range(9):
         for col in range(9):
@@ -99,7 +101,8 @@ def is_solved(puzzle):
                 return False
     return True
 
- # Choose the next empty cell with the fewest possible values
+
+# Choose the next empty cell with the fewest possible values
 def choose_next_cell(puzzle):
     min_count = 10
     next_cell = None
@@ -112,9 +115,9 @@ def choose_next_cell(puzzle):
                     next_cell = (row, col)
     return next_cell
 
- # Count the number of possible values for a cell
+
+# Count the number of possible values for a cell
 def count_possible_values(puzzle, row, col):
-   
     values = set(range(1, 10))
     for i in range(9):
         values.discard(puzzle[row][i])
@@ -126,9 +129,9 @@ def count_possible_values(puzzle, row, col):
             values.discard(puzzle[i][j])
     return len(values)
 
+
 # Check if a value is valid for a cell
 def is_valid(puzzle, row, col, val):
-    
     for i in range(9):
         if puzzle[row][i] == val or puzzle[i][col] == val:
             return False
@@ -139,6 +142,7 @@ def is_valid(puzzle, row, col, val):
             if puzzle[i][j] == val:
                 return False
     return True
+
 
 # check if sudoku puzzle is valid
 def is_valid(board, row, col, num):
@@ -160,6 +164,7 @@ def is_valid(board, row, col, num):
                 return False
 
     return True
+
 
 # iterative dfs algorithm implementation
 def solve_sudoku_iteration_dfs(board):
@@ -192,8 +197,6 @@ def solve_sudoku_iteration_dfs(board):
     return board
 
 
-
-
 # entry function to iteration dfs algorithm
 # returns a matrix of solved sudoku puzzle
 def sudoku_solver_iteration_dfs(board):
@@ -207,6 +210,33 @@ def sudoku_solver_iteration_dfs(board):
         return None  # If no solution exists
 
 
+def solve_sudoku_bfs(puzzle):
+    queue = deque()  # Initialize the queue
+    queue.append(puzzle)
+    visited = set()  # Track visited states
+
+    while queue:
+        current = queue.popleft()
+
+        if is_solved(current):
+            return current
+
+        row, col = choose_next_cell(current)
+
+        for num in range(1, 10):
+            if is_valid(current, row, col, num):
+                new_puzzle = copy.deepcopy(current)
+                new_puzzle[row][col] = num
+
+                # Check if the new state has been visited before
+                state = tuple(map(tuple, new_puzzle))
+                if state not in visited:
+                    visited.add(state)
+                    queue.append(new_puzzle)
+
+    return None
+
+
 # code below is used to test the result of algorithms using console
 
 # def print_board(board):
@@ -216,7 +246,8 @@ def sudoku_solver_iteration_dfs(board):
 #             print(board[i][j], end=" ")
 #         print()
 
-# # Sample Sudoku board
+
+# Sample Sudoku board
 # board = [
 #     [5, 3, 0, 0, 7, 0, 0, 0, 0],
 #     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -243,19 +274,17 @@ def sudoku_solver_iteration_dfs(board):
 # ]
 
 # start_time = time.time()  # Start the timer
-
+#
 # # Solve the Sudoku puzzle
-# solved_board = sudoku_solver_iteration_dfs(board)
-
+# solved_board = solve_sudoku_bfs(board)
+#
 # end_time = time.time()  # Stop the timer
 # elapsed_time = end_time - start_time  # Calculate the elapsed time in seconds
 # elapsed_time_ms = elapsed_time * 1000  # Convert elapsed time to milliseconds
-
+#
 # if solved_board is not None:
 #     print("Sudoku solved:")
 #     print_board(solved_board)
 #     print("Time taken to solve the Sudoku puzzle: {:.3f} milliseconds".format(elapsed_time_ms))
 # else:
 #     print("No solution exists for the Sudoku puzzle.")
-
- 
