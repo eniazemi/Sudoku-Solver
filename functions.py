@@ -236,6 +236,22 @@ def solve_sudoku_bfs(puzzle):
 
     return None
 
+#Backtracking algorithm
+
+def solve_sudoku(board):
+    return board
+
+def isValid(board, row, col, num):
+    # Check if the number is already present in the row
+    for i in range(9):
+        if board[row][i] == num:
+            return False
+
+    # Check if the number is already present in the column
+    for i in range(9):
+        if board[i][col] == num:
+            return False
+
 
 # code below is used to test the result of algorithms using console
 
