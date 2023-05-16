@@ -252,6 +252,16 @@ def isValid(board, row, col, num):
         if board[i][col] == num:
             return False
 
+    # Check if the number is already present in the 3x3 grid
+    start_row = (row // 3) * 3
+    start_col = (col // 3) * 3
+    for i in range(start_row, start_row + 3):
+        for j in range(start_col, start_col + 3):
+            if board[i][j] == num:
+                return False
+
+    return True
+
 
 # code below is used to test the result of algorithms using console
 
