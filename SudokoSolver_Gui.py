@@ -62,21 +62,8 @@ class SolverGUI(QWidget):
         # Open file dialog and get selected file path
         file_path, _ = QFileDialog.getOpenFileName(self, 'Import File', '', 'Excel Files (*.xlsx)')
         if file_path:
-            # Call function to process the file
-            self.data = self.process_file(file_path)
-            try:
-                if self.data['error_code']:
-                    QMessageBox.information(self, 'ERROR!',
-                                            f'File {file_path} was not imported successfully!\nError Code : {self.data["error_code"]}')
-            except:
-                QMessageBox.information(self, 'SUCCESS!', f'File {file_path} was imported successfully!')
-                print(self.data)  # contains matrix with numbers
-
-    def process_file(self, file_path):
-        # Read Excel file using pandas
-        data = read_table(file_path)
-        # Add code to process the file as required
-        return data
+            self.file_path = file_path
+            QMessageBox.information(self, 'SUCCESS!', f'File {file_path} was imported successfully!')
 
     def solve_problem(self):
         # Check if a file has been imported before solving the problem
@@ -101,6 +88,11 @@ class SolverGUI(QWidget):
         else:
             # Display an error message
             QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem.')
+
+    def display_excel_file(self, file_path):
+        # Open the Excel file using pandas
+        df = pd.read_excel(file_path)
+        print(df)
 
 
 if __name__ == '__main__':
