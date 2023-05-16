@@ -239,7 +239,9 @@ def solve_sudoku_bfs(puzzle):
 #Backtracking algorithm
 
 def solve_sudoku(board):
-    return board
+    # If there are no empty cells, the puzzle is solved
+    if not find_empty_cell(board):
+        return True
 
 def find_empty_cell(board):
     # Find the next empty cell represented by 0
