@@ -242,6 +242,25 @@ def solve_sudoku(board):
     # If there are no empty cells, the puzzle is solved
     if not find_empty_cell(board):
         return True
+        
+    # Find the next empty cell
+    row, col = find_empty_cell(board)
+
+    # Try placing numbers 1-9 in the empty cell
+    for num in range(1, 10):
+        if isValid(board, row, col, num):
+            # Place the number in the empty cell
+            board[row][col] = num
+
+            # Recursively solve the remaining puzzle
+            if solve_sudoku(board):
+                return True
+
+            # If the current placement leads to an unsolvable puzzle, backtrack by resetting the cell to 0
+            board[row][col] = 0
+
+    # If no number can be placed in the current cell, backtrack
+    return False
 
 def find_empty_cell(board):
     # Find the next empty cell represented by 0
