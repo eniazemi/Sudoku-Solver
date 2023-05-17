@@ -5,6 +5,7 @@ import copy
 import time
 from collections import deque
 
+
 total_number_given = 0
 
 
@@ -65,25 +66,33 @@ def solve_table(path, algorithm):
     print(matrix)
     print(algorithm)
     time = 1
+    x = time.time()
+
     if algorithm == "Backtracking":
         # start time
         # call func
         # end time
+        time = time.time()-x
+
         print("backtrank")
     elif algorithm == "Depth Limited Search":
         # start time
         # call func
-        # end time
+        time = time.time()-x
         print("dls")
     elif algorithm == "Breadth First Search":
         # start time
         # call func
         # end time
+        time = time.time()-x
+
         print("bfs")
     elif algorithm == "iteration dfs":
         # start time
         # call func
-        # end time
+        # end time        
+        time = time.time()-x
+
         print("iteration")
     # add seconds to last row in matix
     return matrix
@@ -159,40 +168,7 @@ def count_possible_values(puzzle, row, col):
     return len(values)
 
 
-# Check if a value is valid for a cell
-def is_valid(puzzle, row, col, val):
-    for i in range(9):
-        if puzzle[row][i] == val or puzzle[i][col] == val:
-            return False
-    box_row = (row // 3) * 3
-    box_col = (col // 3) * 3
-    for i in range(box_row, box_row + 3):
-        for j in range(box_col, box_col + 3):
-            if puzzle[i][j] == val:
-                return False
-    return True
 
-
-# check if sudoku puzzle is valid
-def is_valid(board, row, col, num):
-    # Check if 'num' is already present in the current row
-    if num in board[row] and num != 0:
-        return False
-
-    # Check if 'num' is already present in the current column
-    for i in range(9):
-        if board[i][col] == num and num != 0:
-            return False
-
-    # Check if 'num' is already present in the current 3x3 grid
-    start_row = 3 * (row // 3)
-    start_col = 3 * (col // 3)
-    for i in range(3):
-        for j in range(3):
-            if board[start_row + i][start_col + j] == num and num != 0:
-                return False
-
-    return True
 
 
 # iterative dfs algorithm implementation
@@ -265,7 +241,7 @@ def solve_sudoku_bfs(puzzle):
 
     return None
 
-def isValid(board, row, col, num):
+def is_valid(board, row, col, num):
     # Check if the number is already present in the row
     for i in range(9):
         if board[row][i] == num:
@@ -285,54 +261,3 @@ def isValid(board, row, col, num):
                 return False
 
     return True
-# code below is used to test the result of algorithms using console
-
-# def print_board(board):
-#     # Print the Sudoku board
-#     for i in range(9):
-#         for j in range(9):
-#             print(board[i][j], end=" ")
-#         print()
-
-
-# Sample Sudoku board
-# board = [
-#     [5, 3, 0, 0, 7, 0, 0, 0, 0],
-#     [6, 0, 0, 1, 9, 5, 0, 0, 0],
-#     [0, 9, 8, 0, 0, 0, 0, 6, 0],
-#     [8, 0, 0, 0, 6, 0, 0, 0, 3],
-#     [4, 0, 0, 8, 0, 3, 0, 0, 1],
-#     [7, 0, 0, 0, 2, 0, 0, 0, 6],
-#     [0, 6, 0, 0, 0, 0, 2, 8, 0],
-#     [0, 0, 0, 4, 1, 9, 0, 0, 5],
-#     [0, 0, 0, 0, 8, 0, 0, 7, 9]
-# ]
-
-# # sample of an invalid sudoku
-# unsolvable_sudoku = [
-#     [5, 3, 0, 0, 7, 0, 0, 0, 0],
-#     [6, 0, 0, 1, 9, 5, 0, 0, 0],
-#     [0, 9, 8, 0, 0, 0, 0, 6, 0],
-#     [8, 0, 0, 0, 6, 0, 0, 0, 3],
-#     [4, 0, 0, 8, 0, 3, 0, 0, 1],
-#     [7, 0, 0, 0, 2, 0, 0, 0, 6],
-#     [0, 6, 0, 0, 0, 0, 2, 8, 0],
-#     [0, 0, 0, 4, 1, 9, 0, 0, 5],
-#     [0, 0, 0, 0, 8, 0, 0, 7, 7]  # Note the duplicate '7' in the last row
-# ]
-
-# start_time = time.time()  # Start the timer
-#
-# # Solve the Sudoku puzzle
-# solved_board = solve_sudoku_bfs(board)
-#
-# end_time = time.time()  # Stop the timer
-# elapsed_time = end_time - start_time  # Calculate the elapsed time in seconds
-# elapsed_time_ms = elapsed_time * 1000  # Convert elapsed time to milliseconds
-#
-# if solved_board is not None:
-#     print("Sudoku solved:")
-#     print_board(solved_board)
-#     print("Time taken to solve the Sudoku puzzle: {:.3f} milliseconds".format(elapsed_time_ms))
-# else:
-#     print("No solution exists for the Sudoku puzzle.")
