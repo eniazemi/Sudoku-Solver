@@ -241,6 +241,18 @@ def solve_sudoku_bfs(puzzle):
 
     return None
 
+def solve_sudoku(board):
+    for num in range(1, 10):
+        if is_valid(board, row, col, num):
+            board[row][col] = num
+
+            if solve_sudoku(board):
+                return True
+
+            board[row][col] = 0
+
+    return False
+
 def is_valid(board, row, col, num):
     # Check if the number is already present in the row
     for i in range(9):
