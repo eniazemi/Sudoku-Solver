@@ -11,6 +11,7 @@ from functions import *
 class SolverGUI(QWidget):
     def __init__(self):
         super().__init__()
+        self.file_path = ""
         self.initUI()
 
     def initUI(self):
@@ -52,6 +53,8 @@ class SolverGUI(QWidget):
         main_layout.addLayout(algorithm_layout)
         main_layout.addLayout(solve_layout)
 
+        file_path = ""
+
         # Set main layout and add spacer to bottom
         self.setLayout(main_layout)
         spacer = QLabel('', self)
@@ -60,23 +63,26 @@ class SolverGUI(QWidget):
 
     def import_file(self):
         # Open file dialog and get selected file path
-        file_path, _ = QFileDialog.getOpenFileName(self, 'Import File', '', 'Excel Files (*.xlsx)')
-        if file_path:
-            self.file_path = file_path
-            QMessageBox.information(self, 'SUCCESS!', f'File {file_path} was imported successfully!')
+        self.file_path, _ = QFileDialog.getOpenFileName(self, 'Import File', '', 'Excel Files (*.xlsx)')
+        if self.file_path:
+            x = check_table(self.file_path)
+            if x["response"] == "200":
+                QMessageBox.information(self, 'SUCCESS!', f'File {self.file_path} was imported successfully!')
+
+            else:
+                QMessageBox.information(self, 'Error!',
+                                        f'File {self.file_path} was imported successfully! Error code : {x["response"]}')
+                self.file_path = ""
 
     def solve_problem(self):
         # Check if a file has been imported before solving the problem
-        if not hasattr(self, 'file_path'):
-            QMessageBox.warning(self, 'No File Found',
-                                'Please import an Excel file before attempting to solve the problem.')
-            return
+        if self.file_path == "":
+            return QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem.')
 
         # Get selected algorithm from dropdown list
         algorithm = self.cb_algorithm.currentText()
 
-        # Call function to process the file and solve Sudoku
-        result = process_file(self.file_path, algorithm)
+        result = solve_table(self.file_path, algorithm)
 
         if result:
             # Display the Excel file

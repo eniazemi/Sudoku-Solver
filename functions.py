@@ -37,10 +37,10 @@ def is_9x9(df):
     return False
 
 
-def read_table(path):
+def check_table(path):
     path_valid = check_if_path_valid(path)
     if not path_valid:
-        return {"error_code": "BAD PATH"}
+        return {"response": "BAD PATH"}
 
     df = pd.read_excel(path)
     df_temp = df.fillna(0)
@@ -48,15 +48,44 @@ def read_table(path):
     all_chars_numeric = check_if_all_chars_are_numbers(df_temp)
 
     if not all_chars_numeric:
-        return {"error_code": "ALL THE DATA IN EXCEL SHOULD BE NUMBER"}
+        return {"response": "ALL THE DATA IN EXCEL SHOULD BE NUMBER"}
 
     if not is_9x9(df):
-        return {"error_code": "TABLE SHOULD BE IN 9x9 FORMAT"}
+        return {"response": "TABLE SHOULD BE IN 9x9 FORMAT"}
+
+    return {"response": "200"}
+
+
+def solve_table(path, algorithm):
+    df = pd.read_excel(path)
 
     get_total_number_given_from_df(df)
     df = df.fillna(0)
     matrix = df.to_numpy().astype(int)
-    # print(matrix)
+    print(matrix)
+    print(algorithm)
+    time = 1
+    if algorithm == "Backtracking":
+        # start time
+        # call func
+        # end time
+        print("backtrank")
+    elif algorithm == "Depth Limited Search":
+        # start time
+        # call func
+        # end time
+        print("dls")
+    elif algorithm == "Breadth First Search":
+        # start time
+        # call func
+        # end time
+        print("bfs")
+    elif algorithm == "iteration dfs":
+        # start time
+        # call func
+        # end time
+        print("iteration")
+    # add seconds to last row in matix
     return matrix
 
 
@@ -235,7 +264,6 @@ def solve_sudoku_bfs(puzzle):
                     queue.append(new_puzzle)
 
     return None
-
 
 # code below is used to test the result of algorithms using console
 
