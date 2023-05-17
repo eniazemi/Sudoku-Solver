@@ -242,6 +242,11 @@ def solve_sudoku_bfs(puzzle):
     return None
 
 def solve_sudoku(board):
+    # If there are no empty cells, the puzzle is solved
+    if not find_empty_cell(board):
+        return True
+
+
     for num in range(1, 10):
         if is_valid(board, row, col, num):
             board[row][col] = num
@@ -252,6 +257,15 @@ def solve_sudoku(board):
             board[row][col] = 0
 
     return False
+
+def find_empty_cell(board):
+    # Find the next empty cell represented by 0
+    for i in range(9):
+        for j in range(9):
+            if board[i][j] == 0:
+                return i, j
+    # Return None if no empty cell is found
+    return None
 
 def is_valid(board, row, col, num):
     # Check if the number is already present in the row
