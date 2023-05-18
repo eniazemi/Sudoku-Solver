@@ -5,7 +5,6 @@ import copy
 import time
 from collections import deque
 
-
 total_number_given = 0
 
 
@@ -63,36 +62,39 @@ def solve_table(path, algorithm):
     get_total_number_given_from_df(df)
     df = df.fillna(0)
     matrix = df.to_numpy().astype(int)
-    print(matrix)
-    print(algorithm)
     total_time = 1
     x = time.time()
 
     if algorithm == "Backtracking":
         solution = backtracking_solve_sudoku(matrix)
-        total_time = time.time()-x
+        total_time = time.time() - x
+        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-Backtracking.xlsx"
 
-    
     elif algorithm == "Depth Limited Search":
         solution = solve_sudoku_dls(matrix)
         solution = np.vstack(solution[0]).reshape(9, 9)
-        total_time = time.time()-x
-
+        total_time = time.time() - x
+        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-DLS.xlsx"
 
     elif algorithm == "Breadth First Search":
         solution = solve_sudoku_bfs(matrix)
-        total_time = time.time()-x
-
+        total_time = time.time() - x
+        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-BFS.xlsx"
 
     elif algorithm == "iteration dfs":
         solution = solve_sudoku_iteration_dfs(matrix)
-        total_time = time.time()-x      
+        total_time = time.time() - x
+        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-iDFS.xlsx"
 
-  
-    print(total_time)
-    # add seconds to last row in matix
+    text = "Algorithm: " + algorithm + ". Time used: " + str(total_time) + " seconds. Number given as input: " + str(
+        total_number_given)
 
-    print(solution)
+    new_row = pd.DataFrame([text], columns=["Description"])
+    df = pd.DataFrame(solution)
+    df = df.append(new_row, ignore_index=True)
+
+    df.to_excel(file_path, index=False)
+
     return matrix
 
 
@@ -166,9 +168,6 @@ def count_possible_values(puzzle, row, col):
     return len(values)
 
 
-
-
-
 # iterative dfs algorithm implementation
 def solve_sudoku_iteration_dfs(board):
     stack = []  # Initialize the stack
@@ -239,8 +238,8 @@ def solve_sudoku_bfs(puzzle):
 
     return None
 
+
 def backtracking_solve_sudoku(board):
-    
     def is_valid(row, col, num):
         # Check if the number already exists in the row
         for i in range(9):
@@ -299,8 +298,9 @@ def backtracking_solve_sudoku(board):
     else:
         return None
 
+
 def is_valid(board, row, col, num):
-        # Check if the number is already present in the row
+    # Check if the number is already present in the row
     for i in range(9):
         if board[row][i] == num:
             return False

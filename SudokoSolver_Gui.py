@@ -84,15 +84,11 @@ class SolverGUI(QWidget):
 
         result = solve_table(self.file_path, algorithm)
 
-        if result:
-            
-            # Display a success message
+        if isinstance(result, np.ndarray):
             QMessageBox.information(self, 'Success!', 'Sudoku solved and results displayed!')
 
         else:
-            # Display an error message
-            QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem.')
-
+            QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem. ')
 
 
 if __name__ == '__main__':
