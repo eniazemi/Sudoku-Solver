@@ -65,40 +65,42 @@ def solve_table(path, algorithm):
     matrix = df.to_numpy().astype(int)
     print(matrix)
     print(algorithm)
-    time = 1
+    total_time = 1
     x = time.time()
 
     if algorithm == "Backtracking":
-        # start time
-        # call func
-        # end time
-        time = time.time()-x
+        solution = backtracking_solve_sudoku(matrix)
+        total_time = time.time()-x
 
-        print("backtrank")
+    
     elif algorithm == "Depth Limited Search":
-        # start time
-        # call func
-        time = time.time()-x
-        print("dls")
+        solution = solve_sudoku_dls(matrix)
+        solution = np.vstack(solution[0]).reshape(9, 9)
+        total_time = time.time()-x
+
+
     elif algorithm == "Breadth First Search":
-        # start time
-        # call func
-        # end time
-        time = time.time()-x
+        solution = solve_sudoku_bfs(matrix)
+        total_time = time.time()-x
 
-        print("bfs")
+
     elif algorithm == "iteration dfs":
-        # start time
-        # call func
-        # end time        
-        time = time.time()-x
+        solution = solve_sudoku_iteration_dfs(matrix)
+        total_time = time.time()-x      
 
-        print("iteration")
+  
+    print(total_time)
+    # Create a new column
+    time = ["-", "-", "-", "-", "-", "-", "-", "-", total_time]
+    solution = solution.concat([solution, solution.Series(time, name="New Column")], axis=1)
+
     # add seconds to last row in matix
+
+    print(solution)
     return matrix
 
 
-def solve_sudoku_dls(puzzle, depth_limit):
+def solve_sudoku_dls(puzzle, depth_limit=81):
     # Create a copy of the puzzle to avoid modifying the original
     puzzle_copy = [row[:] for row in puzzle]
 
@@ -241,7 +243,7 @@ def solve_sudoku_bfs(puzzle):
 
     return None
 
-def solve_sudoku(board):
+def backtracking_solve_sudoku(board):
     # If there are no empty cells, the puzzle is solved
     if not find_empty_cell(board):
         return True
@@ -256,7 +258,7 @@ def solve_sudoku(board):
             board[row][col] = num
 
             # Recursively solve the remaining puzzle
-            if solve_sudoku(board):
+            if backtracking_solve_sudoku(board):
                 return True
 
             # If the current placement leads to an unsolvable puzzle, backtrack by resetting the cell to 0

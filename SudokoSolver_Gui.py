@@ -85,9 +85,7 @@ class SolverGUI(QWidget):
         result = solve_table(self.file_path, algorithm)
 
         if result:
-            # Display the Excel file
-            self.display_excel_file(result)
-
+            
             # Display a success message
             QMessageBox.information(self, 'Success!', 'Sudoku solved and results displayed!')
 
@@ -95,10 +93,6 @@ class SolverGUI(QWidget):
             # Display an error message
             QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem.')
 
-    def display_excel_file(self, file_path):
-        # Open the Excel file using pandas
-        df = pd.read_excel(file_path)
-        print(df)
 
 
 if __name__ == '__main__':
