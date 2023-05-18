@@ -90,10 +90,6 @@ def solve_table(path, algorithm):
 
   
     print(total_time)
-    # Create a new column
-    time = ["-", "-", "-", "-", "-", "-", "-", "-", total_time]
-    solution = solution.concat([solution, solution.Series(time, name="New Column")], axis=1)
-
     # add seconds to last row in matix
 
     print(solution)
@@ -244,55 +240,61 @@ def solve_sudoku_bfs(puzzle):
     return None
 
 def backtracking_solve_sudoku(board):
-    # If there are no empty cells, the puzzle is solved
-    if not find_empty_cell(board):
-        return True
-
-    # Find the next empty cell
-    row, col = find_empty_cell(board)
-
-    # Try placing numbers 1-9 in the empty cell
-    for num in range(1, 10):
-        if is_valid(board, row, col, num):
-            # Place the number in the empty cell
-            board[row][col] = num
-
-            # Recursively solve the remaining puzzle
-            if backtracking_solve_sudoku(board):
-                return True
-
-            # If the current placement leads to an unsolvable puzzle, backtrack by resetting the cell to 0
-            board[row][col] = 0
-
-    # If no number can be placed in the current cell, backtrack
-    return False
-
-def find_empty_cell(board):
-    # Find the next empty cell represented by 0
-    for i in range(9):
-        for j in range(9):
-            if board[i][j] == 0:
-                return i, j
-    # Return None if no empty cell is found
-    return None
-
-def is_valid(board, row, col, num):
-    # Check if the number is already present in the row
-    for i in range(9):
-        if board[row][i] == num:
-            return False
-
-    # Check if the number is already present in the column
-    for i in range(9):
-        if board[i][col] == num:
-            return False
-
-    # Check if the number is already present in the 3x3 grid
-    start_row = (row // 3) * 3
-    start_col = (col // 3) * 3
-    for i in range(start_row, start_row + 3):
-        for j in range(start_col, start_col + 3):
-            if board[i][j] == num:
+    
+    def is_valid(row, col, num):
+        # Check if the number already exists in the row
+        for i in range(9):
+            if board[row][i] == num:
                 return False
 
-    return True
+        # Check if the number already exists in the column
+        for i in range(9):
+            if board[i][col] == num:
+                return False
+
+        # Check if the number already exists in the 3x3 box
+        start_row = (row // 3) * 3
+        start_col = (col // 3) * 3
+        for i in range(3):
+            for j in range(3):
+                if board[start_row + i][start_col + j] == num:
+                    return False
+
+        return True
+
+    def find_empty_cell():
+        # Find the next empty cell (cell with value 0)
+        for i in range(9):
+            for j in range(9):
+                if board[i][j] == 0:
+                    return i, j
+        return None
+
+    def solve():
+        cell = find_empty_cell()
+
+        # If there are no empty cells, the puzzle is solved
+        if cell is None:
+            return True
+
+        row, col = cell
+
+        # Try different numbers from 1 to 9
+        for num in range(1, 10):
+            if is_valid(row, col, num):
+                board[row][col] = num
+
+                # Recursively solve the puzzle
+                if solve():
+                    return True
+
+                # If the current number doesn't lead to a solution, reset the cell
+                board[row][col] = 0
+
+        return False
+
+    # Call the solve function to solve the puzzle
+    if solve():
+        return board
+    else:
+        return None
