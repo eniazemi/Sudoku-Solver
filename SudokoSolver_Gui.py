@@ -86,6 +86,8 @@ class SolverGUI(QWidget):
 
         if isinstance(result, np.ndarray):
             QMessageBox.information(self, 'Success!', 'Sudoku solved and results displayed!')
+            print("Sudoku Result:")
+            print(result)
 
         else:
             QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem. ')

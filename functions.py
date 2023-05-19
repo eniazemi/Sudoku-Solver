@@ -55,10 +55,12 @@ def check_table(path):
 
     return {"response": "200"}
 
-
 def solve_table(path, algorithm):
-    df = pd.read_excel(path)
+    validation_result = check_table(path)
+    if validation_result["response"] != "200":
+        return {"response": validation_result["response"]}
 
+    df = pd.read_excel(path)
     get_total_number_given_from_df(df)
     df = df.fillna(0)
     matrix = df.to_numpy().astype(int)
@@ -67,24 +69,32 @@ def solve_table(path, algorithm):
 
     if algorithm == "Backtracking":
         solution = backtracking_solve_sudoku(matrix)
+        if solution is None:
+            return {"response": "The Sudoku puzzle is not valid and cannot be solved using Depth Limited Search."}
         total_time = time.time() - x
-        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-Backtracking.xlsx"
+        file_path = r"result-Backtracking.xlsx"
 
     elif algorithm == "Depth Limited Search":
         solution = solve_sudoku_dls(matrix)
+        if solution is None:
+            return {"response": "The Sudoku puzzle is not valid and cannot be solved using Depth Limited Search."}
         solution = np.vstack(solution[0]).reshape(9, 9)
         total_time = time.time() - x
-        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-DLS.xlsx"
+        file_path = r"C:\Users\Hp\OneDrive\Documents\GitHub\Sudoku-Solver\result-DLS.xlsx"
 
     elif algorithm == "Breadth First Search":
         solution = solve_sudoku_bfs(matrix)
+        if solution is None:
+            return {"response": "The Sudoku puzzle is not valid and cannot be solved using Breadth First Search."}
         total_time = time.time() - x
-        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-BFS.xlsx"
+        file_path = r"C:\Users\Hp\OneDrive\Documents\GitHub\Sudoku-Solver\result-BFS.xlsx"
 
     elif algorithm == "iteration dfs":
         solution = solve_sudoku_iteration_dfs(matrix)
+        if solution is None:
+            return {"response": "The Sudoku puzzle is not valid and cannot be solved using iteration dfs."}
         total_time = time.time() - x
-        file_path = r"C:\Users\User\Desktop\Sudoku-Solver\result-iDFS.xlsx"
+        file_path = r"C:\Users\Hp\OneDrive\Documents\GitHub\Sudoku-Solver\result-iDFS.xlsx"
 
     text = "Algorithm: " + algorithm + ". Time used: " + str(total_time) + " seconds. Number given as input: " + str(
         total_number_given)
@@ -95,7 +105,7 @@ def solve_table(path, algorithm):
 
     df.to_excel(file_path, index=False)
 
-    return matrix
+    return solution
 
 
 def solve_sudoku_dls(puzzle, depth_limit=81):
@@ -194,9 +204,10 @@ def solve_sudoku_iteration_dfs(board):
             index -= 1
 
             if index < 0:
-                return False
+                return None  # Return None if the puzzle is invalid
 
     return board
+
 
 
 # entry function to iteration dfs algorithm
