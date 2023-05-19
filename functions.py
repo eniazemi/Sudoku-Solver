@@ -80,21 +80,21 @@ def solve_table(path, algorithm):
             return {"response": "The Sudoku puzzle is not valid and cannot be solved using Depth Limited Search."}
         solution = np.vstack(solution[0]).reshape(9, 9)
         total_time = time.time() - x
-        file_path = r"C:\Users\Hp\OneDrive\Documents\GitHub\Sudoku-Solver\result-DLS.xlsx"
+        file_path = r"result-DLS.xlsx"
 
     elif algorithm == "Breadth First Search":
         solution = solve_sudoku_bfs(matrix)
         if solution is None:
             return {"response": "The Sudoku puzzle is not valid and cannot be solved using Breadth First Search."}
         total_time = time.time() - x
-        file_path = r"C:\Users\Hp\OneDrive\Documents\GitHub\Sudoku-Solver\result-BFS.xlsx"
+        file_path = r"result-BFS.xlsx"
 
     elif algorithm == "iteration dfs":
         solution = solve_sudoku_iteration_dfs(matrix)
         if solution is None:
             return {"response": "The Sudoku puzzle is not valid and cannot be solved using iteration dfs."}
         total_time = time.time() - x
-        file_path = r"C:\Users\Hp\OneDrive\Documents\GitHub\Sudoku-Solver\result-iDFS.xlsx"
+        file_path = r"result-iDFS.xlsx"
 
     text = "Algorithm: " + algorithm + ". Time used: " + str(total_time) + " seconds. Number given as input: " + str(
         total_number_given)
