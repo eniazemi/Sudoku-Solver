@@ -285,27 +285,6 @@ def solve_sudoku_bfs(puzzle):
 
 
 def backtracking_solve_sudoku(board):
-    def check_if_valid(row, col, num):
-        # Check if the number already exists in the row
-        for i in range(9):
-            if board[row][i] == num:
-                return False
-
-        # Check if the number already exists in the column
-        for i in range(9):
-            if board[i][col] == num:
-                return False
-
-        # Check if the number already exists in the 3x3 box
-        start_row = (row // 3) * 3
-        start_col = (col // 3) * 3
-        for i in range(3):
-            for j in range(3):
-                if board[start_row + i][start_col + j] == num:
-                    return False
-
-        return True
-
     def find_empty_cell():
         # Find the next empty cell (cell with value 0)
         for i in range(9):
@@ -325,7 +304,7 @@ def backtracking_solve_sudoku(board):
 
         # Try different numbers from 1 to 9
         for num in range(1, 10):
-            if check_if_valid(row, col, num):
+            if is_valid(board, row, col, num):
                 board[row][col] = num
 
                 # Recursively solve the puzzle
