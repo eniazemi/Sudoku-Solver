@@ -37,6 +37,13 @@ def is_9x9(df):
     return False
 
 
+def has_enough_numbers(df):
+    get_total_number_given_from_df(df)
+    if total_number_given < 17:
+        return False
+    return True
+
+
 def check_table(path):
     path_valid = check_if_path_valid(path)
     if not path_valid:
@@ -53,7 +60,11 @@ def check_table(path):
     if not is_9x9(df):
         return {"response": "TABLE SHOULD BE IN 9x9 FORMAT"}
 
+    if not has_enough_numbers(df):
+        return {"response": "Not enough numbers. Minimum number required is 17"}
+
     return {"response": "200"}
+
 
 def solve_table(path, algorithm):
     validation_result = check_table(path)
@@ -61,18 +72,18 @@ def solve_table(path, algorithm):
         return {"response": validation_result["response"]}
 
     df = pd.read_excel(path)
-    get_total_number_given_from_df(df)
     df = df.fillna(0)
     matrix = df.to_numpy().astype(int)
     total_time = 1
+    solution = []
     x = time.time()
+    file_path = "result-" + algorithm + ".xlsx"
 
     if algorithm == "Backtracking":
         solution = backtracking_solve_sudoku(matrix)
         if solution is None:
-            return {"response": "The Sudoku puzzle is not valid and cannot be solved using Depth Limited Search."}
+            return {"response": "The Sudoku puzzle is not valid and cannot be solved using Backtracking."}
         total_time = time.time() - x
-        file_path = r"result-Backtracking.xlsx"
 
     elif algorithm == "Depth Limited Search":
         solution = solve_sudoku_dls(matrix)
@@ -80,21 +91,19 @@ def solve_table(path, algorithm):
             return {"response": "The Sudoku puzzle is not valid and cannot be solved using Depth Limited Search."}
         solution = np.vstack(solution[0]).reshape(9, 9)
         total_time = time.time() - x
-        file_path = r"result-DLS.xlsx"
 
     elif algorithm == "Breadth First Search":
         solution = solve_sudoku_bfs(matrix)
         if solution is None:
             return {"response": "The Sudoku puzzle is not valid and cannot be solved using Breadth First Search."}
         total_time = time.time() - x
-        file_path = r"result-BFS.xlsx"
 
     elif algorithm == "iteration dfs":
         solution = solve_sudoku_iteration_dfs(matrix)
         if solution is None:
             return {"response": "The Sudoku puzzle is not valid and cannot be solved using iteration dfs."}
+
         total_time = time.time() - x
-        file_path = r"result-iDFS.xlsx"
 
     text = "Algorithm: " + algorithm + ". Time used: " + str(total_time) + " seconds. Number given as input: " + str(
         total_number_given)
@@ -104,6 +113,8 @@ def solve_table(path, algorithm):
     df = df.append(new_row, ignore_index=True)
 
     df.to_excel(file_path, index=False)
+    print(algorithm)
+    print(total_time)
 
     return solution
 
@@ -209,7 +220,6 @@ def solve_sudoku_iteration_dfs(board):
     return board
 
 
-
 # entry function to iteration dfs algorithm
 # returns a matrix of solved sudoku puzzle
 def sudoku_solver_iteration_dfs(board):
@@ -251,7 +261,7 @@ def solve_sudoku_bfs(puzzle):
 
 
 def backtracking_solve_sudoku(board):
-    def is_valid(row, col, num):
+    def check_if_valid(row, col, num):
         # Check if the number already exists in the row
         for i in range(9):
             if board[row][i] == num:
@@ -291,7 +301,7 @@ def backtracking_solve_sudoku(board):
 
         # Try different numbers from 1 to 9
         for num in range(1, 10):
-            if is_valid(row, col, num):
+            if check_if_valid(row, col, num):
                 board[row][col] = num
 
                 # Recursively solve the puzzle

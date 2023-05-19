@@ -1,5 +1,4 @@
 import sys
-from turtle import pd
 
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QPushButton, QComboBox, QLabel, QFileDialog,
@@ -53,8 +52,6 @@ class SolverGUI(QWidget):
         main_layout.addLayout(algorithm_layout)
         main_layout.addLayout(solve_layout)
 
-        file_path = ""
-
         # Set main layout and add spacer to bottom
         self.setLayout(main_layout)
         spacer = QLabel('', self)
@@ -71,13 +68,13 @@ class SolverGUI(QWidget):
 
             else:
                 QMessageBox.information(self, 'Error!',
-                                        f'File {self.file_path} was imported successfully! Error code : {x["response"]}')
+                                        f'File {self.file_path} was imported successfully!Error code : {x["response"]}')
                 self.file_path = ""
 
     def solve_problem(self):
         # Check if a file has been imported before solving the problem
         if self.file_path == "":
-            return QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem.')
+            return QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem. Check path!')
 
         # Get selected algorithm from dropdown list
         algorithm = self.cb_algorithm.currentText()
@@ -90,7 +87,8 @@ class SolverGUI(QWidget):
             print(result)
 
         else:
-            QMessageBox.warning(self, 'Error!', 'Failed to solve the Sudoku problem. ')
+            error_description = "Failed to solve the Sudoku problem.\nDescription:" + result["response"]
+            QMessageBox.warning(self, 'Error!', error_description)
 
 
 if __name__ == '__main__':
