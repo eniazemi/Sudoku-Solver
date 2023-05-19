@@ -44,6 +44,29 @@ def has_enough_numbers(df):
     return True
 
 
+def is_valid_sudoku(df):
+    for _, row in df.iterrows():
+        if not is_valid_unit(row.tolist()):
+            return False
+
+    for col in df.columns:
+        if not is_valid_unit(df[col].tolist()):
+            return False
+
+    for i in range(0, 9, 3):
+        for j in range(0, 9, 3):
+            subgrid = df.iloc[i:i + 3, j:j + 3].values.flatten().tolist()
+            if not is_valid_unit(subgrid):
+                return False
+
+    return True
+
+
+def is_valid_unit(unit):
+    numbers = [n for n in unit if n != 0]
+    return len(numbers) == len(set(numbers))
+
+
 def check_table(path):
     path_valid = check_if_path_valid(path)
     if not path_valid:
@@ -63,21 +86,22 @@ def check_table(path):
     if not has_enough_numbers(df):
         return {"response": "Not enough numbers. Minimum number required is 17"}
 
+    if not is_valid_sudoku(df):
+        return {"response": "Sudoku is given incorrectly. It does not have a solution"}
+
     return {"response": "200"}
 
 
 def solve_table(path, algorithm):
-    validation_result = check_table(path)
-    if validation_result["response"] != "200":
-        return {"response": validation_result["response"]}
-
     df = pd.read_excel(path)
     df = df.fillna(0)
     matrix = df.to_numpy().astype(int)
+
     total_time = 1
     solution = []
-    x = time.time()
+
     file_path = "result-" + algorithm + ".xlsx"
+    x = time.time()
 
     if algorithm == "Backtracking":
         solution = backtracking_solve_sudoku(matrix)
@@ -113,8 +137,8 @@ def solve_table(path, algorithm):
     df = df.append(new_row, ignore_index=True)
 
     df.to_excel(file_path, index=False)
-    print(algorithm)
-    print(total_time)
+    print("Algorithm: " + algorithm)
+    print("Total time :" + str(total_time))
 
     return solution
 
